@@ -29,6 +29,10 @@ FEATURE_NAMES = [
     "minute_cos",
     "anglez_sin",
     "anglez_cos",
+    # [SY] add new features
+    "enmo_1v_30m_mean",
+    "enmo_1v_120m_mean",
+    "anglez_1v_30m_mean"
 ]
 
 ANGLEZ_MEAN = -8.810476
@@ -50,6 +54,23 @@ def deg_to_rad(x: pl.Expr) -> pl.Expr:
 
 
 def add_feature(series_df: pl.DataFrame) -> pl.DataFrame:
+    # series_df = (
+    #     series_df.with_row_count("step")
+    #     .with_columns(
+    #         *to_coord(pl.col("timestamp").dt.hour(), 24, "hour"),
+    #         *to_coord(pl.col("timestamp").dt.month(), 12, "month"),
+    #         *to_coord(pl.col("timestamp").dt.minute(), 60, "minute"),
+    #         pl.col("step") / pl.count("step"),
+    #         pl.col('anglez_rad').sin().alias('anglez_sin'),
+    #         pl.col('anglez_rad').cos().alias('anglez_cos'),
+    #     )
+    #     .select("series_id", *FEATURE_NAMES)
+    # )
+    
+    # [SY] add new features
+    # "enmo_1v_30m_mean": (pl.col("enmo").diff().abs().rolling_mean(12 * 30, center=True, min_periods=1)*10).abs().cast(pl.UInt32).alias(f'{var}_1v_{mins}m_mean'),
+    # "enmo_1v_120m_mean",
+    # "anglez_1v_30m_mean"
     series_df = (
         series_df.with_row_count("step")
         .with_columns(
@@ -59,10 +80,14 @@ def add_feature(series_df: pl.DataFrame) -> pl.DataFrame:
             pl.col("step") / pl.count("step"),
             pl.col('anglez_rad').sin().alias('anglez_sin'),
             pl.col('anglez_rad').cos().alias('anglez_cos'),
+            (pl.col('enmo').diff().abs().rolling_mean(12 * 30, center=True, min_periods=1)*10).abs().cast(pl.UInt32).alias(f'enmo_1v_30m_mean'), 
+            (pl.col('enmo').diff().abs().rolling_mean(12 * 120, center=True, min_periods=1)*10).abs().cast(pl.UInt32).alias(f'enmo_1v_120m_mean'),
+            (pl.col('anglez').diff().abs().rolling_mean(12 * 30, center=True, min_periods=1)*10).abs().cast(pl.UInt32).alias(f'anglez_1v_30m_mean')
         )
         .select("series_id", *FEATURE_NAMES)
     )
     return series_df
+
 
 
 def save_each_series(this_series_df: pl.DataFrame, columns: list[str], output_dir: Path):

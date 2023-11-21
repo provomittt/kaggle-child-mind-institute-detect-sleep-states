@@ -20,14 +20,14 @@ defaults:
 
 seed: 42
 exp_name: dummy
-batch_size: 32
-num_workers: 24
+batch_size: 2
+num_workers: 1
 duration: 5760 # duration * 5 = 秒数
 downsample_rate: 2
 upsample_rate: 1
 
 trainer:
-  epochs: 50
+  epochs: 1
   accelerator: auto
   use_amp: true
   debug: false
@@ -67,6 +67,9 @@ features:
   # - "minute_cos"
   # - "anglez_sin"
   # - "anglez_cos"
+  - "enmo_1v_30m_mean"
+  # - "enmo_1v_120m_mean"
+  # - "anglez_1v_30m_mean"
 
 # optimizer
 optimizer:

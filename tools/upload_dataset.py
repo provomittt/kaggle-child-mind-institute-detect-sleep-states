@@ -31,7 +31,7 @@ def copy_files_with_exts(source_dir: Path, dest_dir: Path, exts: list):
 
 @click.command()
 @click.option("--title", "-t", default="CMI-model")
-@click.option("--dir", "-d", type=Path, default="./output/train")
+@click.option("--dir", "-d", type=Path, default="./data/output/train")
 @click.option("--extentions", "-e", type=list[str], default=["best_model.pth", ".hydra/*.yaml"])
 @click.option("--user_name", "-u", default="zhengshini")
 @click.option("--new", "-n", is_flag=True)

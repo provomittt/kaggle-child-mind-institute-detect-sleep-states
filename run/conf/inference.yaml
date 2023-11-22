@@ -64,4 +64,4 @@ features:
   # - "anglez_cos"
   - "enmo_1v_30m_mean"
   # - "enmo_1v_120m_mean"
-  # - "anglez_1v_30m_mean"
+  - "anglez_1v_30m_mean"
